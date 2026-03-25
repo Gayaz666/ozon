@@ -1,6 +1,6 @@
 import getData from "./getData";
 import renderGoods from "./renderGoods";
-import { priceFilter } from "./filters";
+import { priceFilter2 } from "./filters";
 
 const price = () => {
   const minInput = document.querySelector('#min');

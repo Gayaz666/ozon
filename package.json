@@ -13,8 +13,13 @@
   "devDependencies": {
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"
+<<<<<<< HEAD
   },
   "dependencies": {
     "json-server": "^1.0.0-beta.15"
   }
 }
+=======
+  }
+}
+>>>>>>> e8c6e4eaa6427ca2369acd86d9e3dda6a0e329e4

@@ -1,10 +1,18 @@
 import renderCart from "./renderCart";
+import postData from "./postData";
 
 const cart = () => {
     const cartBtn = document.getElementById('cart');
     const cartModal = document.querySelector('.cart')
     const cartCloseBtn = document.querySelector('.cart-close');
+    const cartTotal = document.querySelector('.cart-total > span');
+    const cartSendBtn = document.querySelector('.cart-confirm');
     const goodsWrapper = document.querySelector('.goods');
+    const cartWrapper = document.querySelector('.cart-wrapper')
+    const cartCounter = document.querySelector('.counter');
+
+    cartCounter.textContent = localStorage.getItem('cart') ?
+        JSON.parse(localStorage.getItem('cart')).length : 0;
 
     const openCart = () => {
         const cart = localStorage.getItem('cart') ?
@@ -13,7 +21,11 @@ const cart = () => {
         cartModal.style.display = 'flex';
 
         renderCart(cart);
+        cartTotal.textContent = cart.reduce((sum, goodItem) => {
+            return sum + goodItem.price;
+        }, 0)
     }
+
     const closeCart = () => {
         cartModal.style.display = '';
     }
@@ -32,12 +44,52 @@ const cart = () => {
                 return item.id === +key;
             });
 
+
             cart.push(goodItem);
 
             localStorage.setItem('cart', JSON.stringify(cart));
+            cartCounter.textContent = JSON.parse(localStorage.getItem('cart')).length;
         }
 
-    })
+    });
+
+    cartWrapper.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-primary')) {
+            const cart = localStorage.getItem('cart') ?
+                JSON.parse(localStorage.getItem('cart')) : [];
+            const card = event.target.closest('.card');
+            const key = card.dataset.key;
+            const index = cart.findIndex((item) => {
+                return item.id === +key;
+            });
+
+            cart.splice(index, 1);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            renderCart(cart);
+
+            cartTotal.textContent = cart.reduce((sum, goodItem) => {
+                return sum + goodItem.price;
+            }, 0);
+            cartCounter.textContent = JSON.parse(localStorage.getItem('cart')).length;
+        }
+    });
+
+    cartSendBtn.addEventListener('click', () => {
+        const cart = localStorage.getItem('cart') ?
+            JSON.parse(localStorage.getItem('cart')) : [];
+
+        postData(cart).then(() => {
+            localStorage.removeItem('cart');
+
+            renderCart([]);
+
+            cartTotal.textContent = 0;
+            cartCounter.textContent = 0;
+
+        });
+    });
 }
 
 export default cart;
